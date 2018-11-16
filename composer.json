@@ -1,0 +1,14 @@
+{
+    "name": "r11/accounts-php",
+    "description": "Accounts",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "Bartosz Kuzma",
+            "email": "bartosz.kuzma@release11.com"
+        }
+    ],
+    "require": {
+        "bcosca/fatfree": "3.6.*"
+    }
+}
