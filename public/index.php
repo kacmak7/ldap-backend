@@ -21,5 +21,6 @@ $f3->route('GET /api/test',
 		echo 'test';
 	});
 $f3->route('GET /api/test/con', 'Controller\Api->GET_test_message');
+$f3->route('GET /api/test/array', 'Controller\Api->GET_test_numbers');
 $f3->run();
 
