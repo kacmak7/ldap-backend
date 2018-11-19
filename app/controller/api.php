@@ -28,4 +28,11 @@ class Api {
 	    $view=\View::instance();
 	    echo $view->render('json_data.phtml', 'application/json', array('data' => $testMessage));
     }
+
+    public function GET_test_numbers(\Base $f3) {
+	    $data = array(1, 5, 2, 97, 26);
+
+	    $view=\View::instance();
+	    echo $view->render('json_data.phtml', 'application_json', array('data' => $data));
+    }
 }
