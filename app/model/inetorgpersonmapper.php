@@ -33,4 +33,12 @@ class InetOrgPersonMapper {
 		
 	}
 
+
+
+
+	public function testGet() {
+		$person = $this->fetch('testt1');
+		echo $person[0]['homedirectory'][0];
+	}
+
 }
