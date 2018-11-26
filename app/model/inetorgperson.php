@@ -3,8 +3,7 @@
 require_once 'Acc/Ldap/Object.php';
 
 
-class Acc_Model_InetOrgPerson extends Acc_Ldap_Object
-{
+class InetOrgPerson {
     /**
      * List of required attributes
      *

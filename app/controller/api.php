@@ -19,9 +19,9 @@ class Api {
 
 	public function __construct() {
 		$this->_view = \View::instance();
-		/*$this->_ldap_dn = 'cn=admin,dc=marol,dc=com,dc=pl';
+		$this->_ldap_dn = 'cn=admin,dc=marol,dc=com,dc=pl';
 		$this->_ldap_password = 'secret';
-		$this->_ldap_con = ldap_connect('127.0.0.1');*/
+		$this->_ldap_con = ldap_connect('127.0.0.1');
 		$this->_inetOrgPersonMapper = new \Model\InetOrgPersonMapper();
 	}
 
@@ -52,10 +52,15 @@ class Api {
 		echo $this->_view->render('json_data.phtml', 'application_json', array('data' => $this->_inetOrgPersonMapper->fetch('*')));
 	}
 
+	public function GET_users_array(\Base $f3) {
+		print_r($this->_inetOrgPersonMapper->fetch('*'));
+
+	}
+
 	public function POST_user(\Base $f3) {
 		ldap_set_option($this->_ldap_con, LDAP_OPT_PROTOCOL_VERSION, 3);
 
-		if(ldap_bind($this->_ldap_con, $this->_ldap_dn, $this->_ldap_password)) {
+		if (ldap_bind($this->_ldap_con, $this->_ldap_dn, $this->_ldap_password)) {
 			$info["objectclass"][0] = "inetOrgPerson";
 			$info["objectclass"][1] = "person";
 			$info["objectclass"][2] = "organizationalPerson";
