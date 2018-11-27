@@ -24,25 +24,21 @@ $f3->route('GET /api/test1', 'Controller\Api->GET_test_message');
 $f3->route('GET /api/test/array', 'Controller\Api->GET_test_numbers');
 
 $f3->route('GET /api/users', 'Controller\Api->GET_users');
+$f3->route('GET /api/user', 'Controller\Api->GET_users');
 
-$f3->route('GET /api/bind', 
-	function() {
-		$ldap_dn = "cn=admin,dc=marol,dc=com,dc=pl";
-		$ldap_password = "secret";
-		$ldap_con = ldap_connect("127.0.0.1");
+$f3->route('POST /api/user', 'Controller\Api->POST_user');
 
-		ldap_set_option($ldap_con, LDAP_OPT_PROTOCOL_VERSION, 3);
+$f3->route('GET /api/users/array', 'Controller\Api->GET_users_array');
 
-		if (ldap_bind($ldap_con, $ldap_dn, $ldap_password)) {
-			echo "Bind successful";
+$f3->route('GET /api/test/number', 'Controller\Api->GET_test_number');
 
-
-		}
-		else {
-			echo "ErRoR";
-		}
+/*$f3->route('POST /api/test/post', 
+	function(\Base $f3) {
+		echo json_decode($f3->get('BODY'),true)['employees'][0]['firstName'];
 	});
-$f3->route('GET /api/search', 
+
+
+/*$f3->route('GET /api/bind', 
 	function() {
 		$ldap_dn = "cn=admin,dc=marol,dc=com,dc=pl";
 		$ldap_password = "secret";
@@ -52,14 +48,6 @@ $f3->route('GET /api/search',
 
 		if (ldap_bind($ldap_con, $ldap_dn, $ldap_password)) {
 			echo "Bind successful";
-
-			$filter = "(uid=andrzejk)";
-			$result = ldap_search($ldap_con, "dc=marol,dc=com,dc=pl", $filter) or exit("search error");
-			$entries = ldap_get_entries($ldap_con, $result);
-
-			print "<pre>";
-			print_r ($entries);
-			print "</pre>";
 
 
 		}
@@ -100,37 +88,6 @@ $f3->route('GET /api/add',
 			echo "ErRoR";
 		}
 	});
-
-$f3->route('GET /api/adldap2',
-	function() {
-		$ad = new Adldap\Adldap();
-
-		$config = [
-			'hosts' => ['marol.com.pl', '127.0.0.1'],
-			'base_dn' => 'dc=marol,dc=com,dc=pl',
-			'username' => 'admin',
-			'password' => 'secret',
-		];
-		$ad->addProvider($config);
-
-		try {
-			$provider = $ad->connect();
-
-			//$results = $provider->search()->where('cn', '=', 'Dariusz Kowalczyk')->get();
-			//echo $results;
-		} catch (Adldap\Auth\BindException $e) {
-			echo "erroR";
-		}
-	});
-$f3->route('GET /api/te/@no',
-	function($f3, $params) {
-		echo "parameter: ";
-		echo $params['no'];
-	});
-
-$f3->route('GET /api/te',
-	function($f3, $params) {
-		echo 'no parameters';
-	});
+ */
 
 $f3->run();
