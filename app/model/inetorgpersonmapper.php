@@ -4,16 +4,17 @@ namespace Model;
 
 class InetOrgPersonMapper {
 
-//	const MIN_UID_NUMBER = 16384;
-
 	private $_ldap_dn;
 	private $_ldap_password;
 	private $_ldap_con;
+
+	private $_min_uid_number;
 
 	public function __construct() {
 		$this->_ldap_dn = 'cn=admin,dc=marol,dc=com,dc=pl';
 		$this->_ldap_password = 'secret';
 		$this->_ldap_con = ldap_connect('127.0.0.1');
+		$this->_min_uid_number = 16384;
 	}
 
 	public function fetch($uid) {
@@ -30,15 +31,23 @@ class InetOrgPersonMapper {
 	}
 
 	public function nextUidNumber() {
+		//$uidNumbers = array();
 		
+		$users = $this->fetch('*');ldap_set_option($this->_ldap_con, LDAP_OPT_PROTOCOL_VERSION, 3);
+		$currentMax = $this->_min_uid_number;
+		foreach ($users as $user) {
+			$current = $user['uidnumber'][0];	
+			if ($currentMax < $current) {
+				$currentMax = $current;
+			}
+		}
+		return ++$currentMax;
 	}
 
-
-
-
-	public function testGet() {
-		$person = $this->fetch('testt1');
-		echo $person[0]['homedirectory'][0];
+	public function getHomeDirectory($uid) {
+		//$person = $this->fetch($uid);
+		//return $person[0]['homedirectory'][0];
+		return '/home/' . $uid;
 	}
 
 }

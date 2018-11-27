@@ -58,17 +58,35 @@ class Api {
 	}
 
 	public function POST_user(\Base $f3) {
+		$data = json_decode($f3->get('BODY'),true)['person'];
+
+//		$cn = $data['cn'];
+
+
 		ldap_set_option($this->_ldap_con, LDAP_OPT_PROTOCOL_VERSION, 3);
 
 		if (ldap_bind($this->_ldap_con, $this->_ldap_dn, $this->_ldap_password)) {
-			$info["objectclass"][0] = "inetOrgPerson";
-			$info["objectclass"][1] = "person";
-			$info["objectclass"][2] = "organizationalPerson";
-			$info["objectclass"][3] = "posixAccount";
-			$info["objectclass"][4] = "shadowAccount";
-			$info["objectclass"][5] = "top";
+			$info['objectclass'][0] = 'inetOrgPerson';
+			$info['objectclass'][1] = 'person';
+			$info['objectclass'][2] = 'organizationalPerson';
+			$info['objectclass'][3] = 'posixAccount';
+			$info['objectclass'][4] = 'shadowAccount';
+			$info['objectclass'][5] = 'top';
+			$info['cn'] = $data['name'] . $data['surname'];
+			$info['gidNumber'] = $this->_inetOrgPersonMapper->nextUidNumber();
+			$info['homeDirectory'] = $this->_inetOrgPersonMapper->getHomeDirectory($uid);
+			$info['sn'] = $data['surname'];
+			$info['uid'] = 'temp';
+			$info['uidNumber'] = $info['gidNumber'];
 		}
 
-		echo $this->_view->render('json_data.phtml', 'application_json', array('data' => $this->_inetOrgPersonMapper->fetch('testt')));
+		ldap_add($this->_ldap_con, $info['uid'] . 'ou=users, dc=marol, dc=com, dc=pl', $info);
+		ldap_close($this->ldap_con);
+
+		echo $this->_view->render('json_data.phtml', 'application_json', array('data' => $this->_inetOrgPersonMapper->fetch($info['uid'])));
+	}
+
+	public function GET_test_number(\Base $f3) {
+		echo $this->_view->render('json_data.phtml', 'application_json', array('data' => $this->_inetOrgPersonMapper->nextUidNumber()));
 	}
 }
