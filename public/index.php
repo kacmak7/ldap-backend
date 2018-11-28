@@ -32,9 +32,10 @@ $f3->route('GET /api/test1', 'Controller\Api->GET_test_message');
 $f3->route('GET /api/test/array', 'Controller\Api->GET_test_numbers');
 
 $f3->route('GET /api/users', 'Controller\Api->GET_users');
-$f3->route('GET /api/user', 'Controller\Api->GET_users');
 
+//$f3->route('GET /api/user', 'Controller\Api->GET_users');
 $f3->route('POST /api/user', 'Controller\Api->POST_user');
+$f3->route('PUT /api/user', 'Controller\Api->PUT_user');
 
 $f3->route('GET /api/users/array', 'Controller\Api->GET_users_array');
 
