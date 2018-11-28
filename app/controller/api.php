@@ -58,7 +58,7 @@ class Api {
 	}
 
 	public function POST_user(\Base $f3) {
-		$data = json_decode($f3->get('BODY'),true)['person'];
+		$data = json_decode($f3->get('BODY'),true);
 
 //		$cn = $data['cn'];
 
@@ -72,16 +72,21 @@ class Api {
 			$info['objectclass'][3] = 'posixAccount';
 			$info['objectclass'][4] = 'shadowAccount';
 			$info['objectclass'][5] = 'top';
-			$info['cn'] = $data['name'] . $data['surname'];
-			$info['gidNumber'] = $this->_inetOrgPersonMapper->nextUidNumber();
-			$info['homeDirectory'] = $this->_inetOrgPersonMapper->getHomeDirectory($uid);
+			$info['givenName'] = $data['name'];
+			$info['cn'] = $data['name'] . ' ' . $data['surname'];
 			$info['sn'] = $data['surname'];
-			$info['uid'] = 'temp';
+			$info['gecos'] = $info['cn'];
+			$info['uid'] = $this->_inetOrgPersonMapper->generateUid($info['givenName'], $info['sn']);
+			$info['gidNumber'] = $this->_inetOrgPersonMapper->nextUidNumber();
+			$info['homeDirectory'] = $this->_inetOrgPersonMapper->getHomeDirectory($info['uid']);
+			$info['sn'] = $data['surname'];
 			$info['uidNumber'] = $info['gidNumber'];
 		}
+		print_r($info);
+		echo '___________________';
 
-		ldap_add($this->_ldap_con, $info['uid'] . 'ou=users, dc=marol, dc=com, dc=pl', $info);
-		ldap_close($this->ldap_con);
+		ldap_add($this->_ldap_con, 'uid=' . $info['uid'] . ', ou=users, dc=marol, dc=com, dc=pl', $info);
+		ldap_close($this->_ldap_con);
 
 		echo $this->_view->render('json_data.phtml', 'application_json', array('data' => $this->_inetOrgPersonMapper->fetch($info['uid'])));
 	}
