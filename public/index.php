@@ -11,8 +11,16 @@ $f3 = Base::instance();
 $f3->config('../app/config.ini');
 
 $f3->set('AUTOLOAD', '../app/');
+
+
 $f3->set('CACHE', 'folder=../tmp/cache');
-$f3->set('CORS.origin', '*');
+// CORS
+$f3->copy('HEADERS.Orgin', 'CORS.origin');
+header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
+header('Access-Control-Allow-Methods: GET, POST');
+header('Access-Control-Allow-Headers: X-Requested_With, Content-Type');
+//$f3->set('CORS.origin', '*');
+
 $f3->set('UI', '../app/view/');
 
 $f3->route('GET /api/domains', 'Controller\Api->GET_domains');
