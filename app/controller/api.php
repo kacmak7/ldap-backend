@@ -58,10 +58,7 @@ class Api {
 	}
 
 	public function POST_user(\Base $f3) {
-		$data = json_decode($f3->get('BODY'),true);
-
-//		$cn = $data['cn'];
-
+		$data = json_decode($f3->get('BODY'), true);
 
 		ldap_set_option($this->_ldap_con, LDAP_OPT_PROTOCOL_VERSION, 3);
 
@@ -77,18 +74,52 @@ class Api {
 			$info['sn'] = $data['surname'];
 			$info['gecos'] = $info['cn'];
 			$info['uid'] = $this->_inetOrgPersonMapper->generateUid($info['givenName'], $info['sn']);
-			$info['gidNumber'] = $this->_inetOrgPersonMapper->nextUidNumber();
+			$info['uidNumber'] = $this->_inetOrgPersonMapper->nextUidNumber();
 			$info['homeDirectory'] = $this->_inetOrgPersonMapper->getHomeDirectory($info['uid']);
 			$info['sn'] = $data['surname'];
-			$info['uidNumber'] = $info['gidNumber'];
+			$info['gidNumber'] = $info['uidNumber'];
+			$info['loginShell'] = '/bin/sh';
+			$info['userPassword'] = $data['password'];
 		}
-		print_r($info);
-		echo '___________________';
+		//print_r($info);
+		//echo '___________________';
 
 		ldap_add($this->_ldap_con, 'uid=' . $info['uid'] . ', ou=users, dc=marol, dc=com, dc=pl', $info);
 		ldap_close($this->_ldap_con);
 
 		echo $this->_view->render('json_data.phtml', 'application_json', array('data' => $this->_inetOrgPersonMapper->fetch($info['uid'])));
+	}
+
+	public function PUT_user(\Base $f3) {
+		$data = json_decode($f3->get('BODY'), true);
+
+		ldap_set_option($this->_ldap_con, LDAP_OPT_PROTOCOL_VERSION, 3);
+
+		if (ldap_bind($this->_ldap_con, $this->_ldap_dn, $this->_ldap_password)) {
+			$info['objectclass'][0] = 'inetOrgPerson';
+			$info['objectclass'][1] = 'person';
+			$info['objectclass'][2] = 'organizationalPerson';
+			$info['objectclass'][3] = 'posixAccount';
+			$info['objectclass'][4] = 'shadowAccount';
+			$info['objectclass'][5] = 'top';
+			$info['givenName'] = $data['name'];
+			$info['cn'] = $data['name'] . ' ' . $data['surname'];
+			$info['sn'] = $data['surname'];
+			$info['gecos'] = $info['cn'];
+			$info['uid'] = $this->_inetOrgPersonMapper->generateUid($info['givenName'], $info['sn']);
+			$info['uidNumber'] = $this->_inetOrgPersonMapper->nextUidNumber();
+			$info['homeDirectory'] = $this->_inetOrgPersonMapper->getHomeDirectory($info['uid']);
+			$info['sn'] = $data['surname'];
+			$info['gidNumber'] = $info['uidNumber'];
+			$info['loginShell'] = '/bin/sh';
+			$info['userPassword'] = $data['password'];	
+		}
+
+		ldap_modify($this->_ldap_con, 'uid=' . $info['uid'] . ', ou=users, dc=marol, dc=com, dc=pl', $info);
+		ldap_close($this->_ldap_con);
+
+		echo $this->_view->render('json_data.phtml', 'application_json', array('data' => $this->_inetOrgPersonMapper->fetch($info['uid'])));
+
 	}
 
 	public function GET_test_number(\Base $f3) {
