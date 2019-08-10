@@ -1,9 +1,5 @@
 <?php
 
-/*
- * $Id$
- */
-
 require_once('../vendor/autoload.php');
 
 $f3 = Base::instance();

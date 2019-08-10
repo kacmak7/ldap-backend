@@ -2,9 +2,6 @@
 	
 namespace Controller;
 
-/**
- * @author Bartosz Kuzmab <bartosz.kuzma@release11.com>
- */
 class Api {
 
 	private $_view;
